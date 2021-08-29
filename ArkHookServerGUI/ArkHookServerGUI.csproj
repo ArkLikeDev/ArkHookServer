@@ -23,6 +23,7 @@
   <ItemGroup>
     <Reference Include="Frida">
       <HintPath>..\..\FridaSharp\FridaSharp\Frida.dll</HintPath>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
