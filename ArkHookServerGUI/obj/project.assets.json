@@ -2,15 +2,6 @@
   "version": 3,
   "targets": {
     "net5.0-windows7.0": {
-      "JetBrains.Annotations/2021.2.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
-        }
-      },
       "Microsoft.Extensions.DependencyInjection/5.0.0": {
         "type": "package",
         "dependencies": {
@@ -90,28 +81,6 @@
     }
   },
   "libraries": {
-    "JetBrains.Annotations/2021.2.0": {
-      "sha512": "kKSyoVfndMriKHLfYGmr0uzQuI4jcc3TKGyww7buJFCYeHb/X0kodYBPL7n9454q7v6ASiRmDgpPGaDGerg/Hg==",
-      "type": "package",
-      "path": "jetbrains.annotations/2021.2.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "icon.png",
-        "jetbrains.annotations.2021.2.0.nupkg.sha512",
-        "jetbrains.annotations.nuspec",
-        "lib/net20/JetBrains.Annotations.dll",
-        "lib/net20/JetBrains.Annotations.xml",
-        "lib/netstandard1.0/JetBrains.Annotations.deps.json",
-        "lib/netstandard1.0/JetBrains.Annotations.dll",
-        "lib/netstandard1.0/JetBrains.Annotations.xml",
-        "lib/netstandard2.0/JetBrains.Annotations.deps.json",
-        "lib/netstandard2.0/JetBrains.Annotations.dll",
-        "lib/netstandard2.0/JetBrains.Annotations.xml",
-        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.dll",
-        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.xml"
-      ]
-    },
     "Microsoft.Extensions.DependencyInjection/5.0.0": {
       "sha512": "Rc2kb/p3Ze6cP6rhFC3PJRdWGbLvSHZc0ev7YlyeU6FmHciDMLrhoVoTUEzKPhN5ZjFgKF1Cf5fOz8mCMIkvpA==",
       "type": "package",
@@ -251,7 +220,6 @@
   "projectFileDependencyGroups": {
     "net5.0-windows7.0": [
       "FridaSharp >= 1.0.0",
-      "JetBrains.Annotations >= 2021.2.0",
       "Microsoft.Extensions.Logging >= 5.0.0"
     ]
   },
@@ -298,10 +266,6 @@
       "net5.0-windows7.0": {
         "targetAlias": "net5.0-windows",
         "dependencies": {
-          "JetBrains.Annotations": {
-            "target": "Package",
-            "version": "[2021.2.0, )"
-          },
           "Microsoft.Extensions.Logging": {
             "target": "Package",
             "version": "[5.0.0, )"

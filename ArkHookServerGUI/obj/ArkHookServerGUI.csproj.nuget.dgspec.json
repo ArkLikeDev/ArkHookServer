@@ -44,10 +44,6 @@
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
           "dependencies": {
-            "JetBrains.Annotations": {
-              "target": "Package",
-              "version": "[2021.2.0, )"
-            },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
               "version": "[5.0.0, )"

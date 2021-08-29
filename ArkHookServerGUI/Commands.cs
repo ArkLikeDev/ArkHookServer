@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedParameter.Global
@@ -64,7 +63,6 @@ namespace ArkLike.HookServer.GUI
 			}
 		}
 		
-		[UsedImplicitly]
 		[HelpEntry("help", "List commands, or get help of specified command.", 0,"command")]
 		[CommandEntry("help", typeof(Func<string[], CommandExecResult>))]
 		[InheritedCommandEntry("man", "help")]
@@ -86,16 +84,14 @@ namespace ArkLike.HookServer.GUI
 				
 			return CommandExecResult.Succeeded;
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("attach", "Attach to existing game process.")]
 		[CommandEntry("attach", typeof(Func<string[], CommandExecResult>))]
 		public static CommandExecResult Attach(params string[] args)
 		{
 			throw new NotImplementedException();
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("attach-spawn", "Spawn game instance and attach.")]
 		[InheritedHelpEntry("attach-with-spawn", "attach-spawn")]
 		[InheritedHelpEntry("spawn", "attach-spawn")]
@@ -106,8 +102,7 @@ namespace ArkLike.HookServer.GUI
 		{
 			return CommandExecResult.Succeeded;
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("echo", "Write output to console. For test purpose only.", parameters:"text")]
 		[CommandEntry("echo", typeof(Func<string[], CommandExecResult>))]
 		public static CommandExecResult Echo(params string[] args)
@@ -115,8 +110,7 @@ namespace ArkLike.HookServer.GUI
 			ALLog.GlobalLogger.LogInformation(args.Aggregate("", string.Concat));
 			return CommandExecResult.Succeeded;
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("about", "Show version information.")]
 		[InheritedHelpEntry("version", "about")]
 		[CommandEntry("about", typeof(Func<string[], CommandExecResult>))]
@@ -126,8 +120,7 @@ namespace ArkLike.HookServer.GUI
 			ALLog.GlobalLogger.LogInformation(Assembly.GetExecutingAssembly().FullName);
 			return CommandExecResult.Succeeded;
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("exit", "Does what it says.")]
 		[InheritedHelpEntry("quit", "exit")]
 		[CommandEntry("exit", typeof(Func<string[], Task<CommandExecResult>>))]
@@ -140,8 +133,7 @@ namespace ArkLike.HookServer.GUI
 
 			return CommandExecResult.Failed;//理论上不会执行到这一句
 		}
-
-		[UsedImplicitly]
+		
 		[HelpEntry("list-devices", "List existing devices in frida device manager.")]
 		[InheritedHelpEntry("list", "list-devices")]
 		[CommandEntry("list-devices", typeof(Func<string[], CommandExecResult>))]
@@ -185,7 +177,7 @@ namespace ArkLike.HookServer.GUI
 	{
 		public CommandHelpData Data;
 
-		public HelpEntryAttribute(string entry, [CanBeNull] string helpText = null, int optionalIndex = int.MaxValue, [CanBeNull] params string[] parameters)
+		public HelpEntryAttribute(string entry, string helpText = null, int optionalIndex = int.MaxValue, params string[] parameters)
 		{
 			Data = new CommandHelpData(entry, helpText, parameters, optionalIndex);
 		}
