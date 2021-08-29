@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.Linq;
+using System.Windows.Threading;
 using Frida;
 
 namespace FridaSharp
@@ -21,6 +22,12 @@ namespace FridaSharp
 		public static Session Attach(Device device, uint pid)
 		{
 			return device.Attach(pid);
+		}
+
+		public static string GetDeviceList()
+		{
+			return DeviceManager.EnumerateDevices()
+				.Aggregate("", (s, device) => string.Concat(s, device.ToString(), "\r\n"));
 		}
 	}
 }

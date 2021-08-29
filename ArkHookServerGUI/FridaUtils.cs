@@ -6,8 +6,7 @@ namespace ArkLike.HookServer.GUI
 	{
 		public static string GetFridaDeviceListAsString()
 		{
-			return FridaSharp.FridaUtils.DeviceManager.EnumerateDevices()
-				.Aggregate("", (s, device) => string.Concat(s, device.ToString(), "\r\n"));
+			return FridaSharp.FridaUtils.GetDeviceList();
 		}
 	}
 }

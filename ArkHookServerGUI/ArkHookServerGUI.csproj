@@ -21,13 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Frida">
-      <HintPath>..\..\FridaSharp\FridaSharp\Frida.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
