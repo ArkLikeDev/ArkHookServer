@@ -1,0 +1,89 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\Repo\\ArkHookServer\\ArkHookServerGUI\\ArkHookServerGUI.csproj": {}
+  },
+  "projects": {
+    "E:\\Repo\\ArkHookServer\\ArkHookServerGUI\\ArkHookServerGUI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Repo\\ArkHookServer\\ArkHookServerGUI\\ArkHookServerGUI.csproj",
+        "projectName": "ArkHookServerGUI",
+        "projectPath": "E:\\Repo\\ArkHookServer\\ArkHookServerGUI\\ArkHookServerGUI.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "E:\\Repo\\ArkHookServer\\ArkHookServerGUI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0-windows7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0-windows7.0": {
+            "targetAlias": "net5.0-windows",
+            "projectReferences": {
+              "E:\\Repo\\ArkHookServer\\FridaSharp\\FridaSharp\\FridaSharp.csproj": {
+                "projectPath": "E:\\Repo\\ArkHookServer\\FridaSharp\\FridaSharp\\FridaSharp.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0-windows7.0": {
+          "targetAlias": "net5.0-windows",
+          "dependencies": {
+            "JetBrains.Annotations": {
+              "target": "Package",
+              "version": "[2021.2.0, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Repo\\ArkHookServer\\FridaSharp\\FridaSharp\\FridaSharp.csproj": {
+      "restore": {
+        "projectUniqueName": "E:\\Repo\\ArkHookServer\\FridaSharp\\FridaSharp\\FridaSharp.csproj",
+        "projectName": "FridaSharp",
+        "projectPath": "E:\\Repo\\ArkHookServer\\FridaSharp\\FridaSharp\\FridaSharp.csproj"
+      },
+      "frameworks": {
+        "net40": {}
+      }
+    }
+  }
+}
