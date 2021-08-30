@@ -3,14 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkHookServerGUI", "..\ArkHookServerGUI\ArkHookServerGUI.csproj", "{3911AE1D-3416-4E9C-8AAA-F560A129678D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AHSLauncher", "..\ArkHookServerGUI\AHSLauncher.csproj", "{3911AE1D-3416-4E9C-8AAA-F560A129678D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002CACA2-70C9-4379-AA8E-E12CC16FAED0}"
 	ProjectSection(SolutionItems) = preProject
 		..\Frida\frida-clr-15.0.18-windows-x86_64.dll = ..\Frida\frida-clr-15.0.18-windows-x86_64.dll
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FridaSharp", "..\FridaSharp\FridaSharp\FridaSharp.csproj", "{BCA60FBD-7473-4739-A031-18413DE0DAD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AHSFridaBinding", "..\FridaSharp\FridaSharp\AHSFridaBinding.csproj", "{BCA60FBD-7473-4739-A031-18413DE0DAD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AHSCore", "..\AHSCore\AHSCore.csproj", "{AADBF2A6-77B3-46F9-B9BD-725E6819465E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,14 @@ Global
 		{BCA60FBD-7473-4739-A031-18413DE0DAD9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCA60FBD-7473-4739-A031-18413DE0DAD9}.Release|x64.ActiveCfg = Release|x64
 		{BCA60FBD-7473-4739-A031-18413DE0DAD9}.Release|x64.Build.0 = Release|x64
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Debug|x64.Build.0 = Debug|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Release|x64.ActiveCfg = Release|Any CPU
+		{AADBF2A6-77B3-46F9-B9BD-725E6819465E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

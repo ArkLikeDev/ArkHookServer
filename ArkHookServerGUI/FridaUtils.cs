@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace ArkLike.HookServer.GUI
+﻿namespace ArkLike.HookServer.Launcher
 {
 	internal static class FridaUtils
 	{

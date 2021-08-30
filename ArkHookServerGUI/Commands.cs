@@ -7,8 +7,9 @@ using Microsoft.Extensions.Logging;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace ArkLike.HookServer.GUI
+namespace ArkLike.HookServer.Launcher
 {
+#pragma warning disable IDE0060 // 删除未使用的参数
 	internal static class Commands
 	{
 		public enum CommandExecResult
@@ -23,44 +24,8 @@ namespace ArkLike.HookServer.GUI
 
 		static Commands()
 		{
-			foreach (MethodInfo method in typeof(Commands).GetMethods())
-			{
-				foreach (Attribute attribute in method.GetCustomAttributes())
-					switch (attribute)
-					{
-						case CommandEntryAttribute commandEntry:
-							switch (114514)
-							{
-								case 114514 when commandEntry.FuncType.IsAssignableTo(typeof(Func<string[], CommandExecResult>)):
-									CommandEntries.Add(commandEntry.Entry, async args =>
-									{
-										return await Task.Run(() => method.CreateDelegate<Func<string[], CommandExecResult>>()(args));
-									});
-									break;
-
-								case 114514 when commandEntry.FuncType.IsAssignableTo(typeof(Func<string[], Task<CommandExecResult>>)):
-									CommandEntries.Add(commandEntry.Entry, method.CreateDelegate<Func<string[], Task<CommandExecResult>>>());
-									break;
-							}
-							break;
-
-						case HelpEntryAttribute helpEntry:
-							HelpEntries.Add(helpEntry.Data.Entry, helpEntry.Data);
-							break;
-					}
-
-				foreach (Attribute attribute in method.GetCustomAttributes())
-					switch (attribute)
-					{
-						case InheritedCommandEntryAttribute commandEntry:
-							CommandEntries.Add(commandEntry.Entry, CommandEntries[commandEntry.Base]);
-							break;
-
-						case InheritedHelpEntryAttribute helpEntry:
-							HelpEntries.Add(helpEntry.Entry, HelpEntries[helpEntry.Base]);
-							break;
-					}
-			}
+			CommandInitializer.InitializeCommandsInType(typeof(Commands));
+			CommandInitializer.InitializeCommandsInType(typeof(LauncherCommands));
 		}
 		
 		[HelpEntry("help", "List commands, or get help of specified command.", 0,"command")]
@@ -69,17 +34,15 @@ namespace ArkLike.HookServer.GUI
 		[InheritedCommandEntry("info", "help")]
 		public static CommandExecResult GetHelp(params string[] args)
 		{
-			if ((args?.Length ?? 0) <= 0)
+			if (args is not {Length: > 0})
 			{
 				ALLog.GlobalLogger.LogInformation(
 					HelpEntries.Keys.Aggregate("Available Commands: ", (cur, command) => string.Concat(cur, command, ", ")).TrimEnd(',', ' '));
 				ALLog.GlobalLogger.LogInformation("use 'help <command>' to get the help of specified command.");
 			}
-			else if(args.Length > 0 && CommandUtils.TryGetHelpEntry(args[0], out CommandHelpData helpData))
+			else if(args.Length > 0)
 			{
-				ALLog.GlobalLogger.LogInformation($"Usage: {helpData.Entry} {helpData.GetParamsString()}");
-				if(!string.IsNullOrEmpty(helpData.HelpText))
-					ALLog.GlobalLogger.LogInformation(helpData.HelpText);
+				CommandUtils.TryPrintHelpInfo(args[0]);
 			}
 				
 			return CommandExecResult.Succeeded;
@@ -100,7 +63,7 @@ namespace ArkLike.HookServer.GUI
 		[InheritedCommandEntry("spawn", "attach-spawn")]
 		public static CommandExecResult AttachWithSpawn(params string[] args)
 		{
-			return CommandExecResult.Succeeded;
+			throw new NotImplementedException();
 		}
 		
 		[HelpEntry("echo", "Write output to console. For test purpose only.", parameters:"text")]
@@ -144,92 +107,66 @@ namespace ArkLike.HookServer.GUI
 
 			return CommandExecResult.Succeeded;
 		}
-	}
 
-	[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-	internal sealed class CommandEntryAttribute : Attribute
-	{
-		public readonly string Entry;
-		public readonly Type FuncType;
-
-		public CommandEntryAttribute(string entry, Type funcType)
+		[HelpEntry("bind", "Close existing one and set up a new battle replay pusher. Binding string example:'tcp://127.0.0.1:5555'", parameters:"binding string | -p port")]
+		[CommandEntry("bind", typeof(Func<string[], CommandExecResult>))]
+		public static CommandExecResult BrServiceBind(params string[] args)
 		{
-			Entry = entry;
-			FuncType = funcType;
-		}
-	}
-
-	[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-	sealed class InheritedCommandEntryAttribute : Attribute
-	{
-		public readonly string Entry;
-		public readonly string Base;
-
-		public InheritedCommandEntryAttribute(string entry, string @base)
-		{
-			Entry = entry;
-			Base = @base;
-		}
-	}
-
-	[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-	internal sealed class HelpEntryAttribute : Attribute
-	{
-		public CommandHelpData Data;
-
-		public HelpEntryAttribute(string entry, string helpText = null, int optionalIndex = int.MaxValue, params string[] parameters)
-		{
-			Data = new CommandHelpData(entry, helpText, parameters, optionalIndex);
-		}
-	}
-
-	[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-	sealed class InheritedHelpEntryAttribute : Attribute
-	{
-		public readonly string Entry;
-		public readonly string Base;
-
-		public InheritedHelpEntryAttribute(string entry, string @base)
-		{
-			Entry = entry;
-			Base = @base;
-		}
-	}
-
-	internal readonly struct CommandHelpData
-	{
-		public readonly string Entry;
-		public readonly string HelpText;
-		public readonly string[] Parameters;
-		public readonly int OptionalIndex;
-
-		public CommandHelpData(string entry, string helpText, string[] parameters, int optionalIndex)
-		{
-			Entry = entry;
-			HelpText = helpText;
-			Parameters = parameters;
-			OptionalIndex = Math.Clamp(optionalIndex, 0, parameters?.Length ?? 1);
-		}
-
-		public string GetParamsString()
-		{
-			static string ConnectParams(string cur, string param)
+			static void LogSucceededInfo()
 			{
-				return string.Concat(cur, $"<{param}> ");
+				ALLog.GlobalLogger.LogInformation($"Successfully bind to endpoint: {BattleReplayPusher.EndPoint}.");
 			}
 			
-			if (Parameters is not {Length: > 0})
-				return "<No Parameters>";
+			try
+			{
+				switch (args)
+				{
+					case {Length: 1}:
+						BattleReplayPusher.Open(args[0]);
+						LogSucceededInfo();
+						return CommandExecResult.Succeeded;
 
-			string[] necessaryParams = OptionalIndex > 0
-				? Parameters[..OptionalIndex]
-				: Array.Empty<string>();
+					case {Length: 2}:
+						switch (args[0])
+						{
+							case "-p":
+								if (int.TryParse(args[1], out int port))
+								{
+									BattleReplayPusher.Open(port);
+									LogSucceededInfo();
+									return CommandExecResult.Succeeded;
+								}
+								break;
+						}
+						break;
+				}
 
-			string[] optionalParams = OptionalIndex < Parameters.Length
-				? Parameters[OptionalIndex..]
-				: Array.Empty<string>();
-			
-			return $"{necessaryParams.Aggregate("", ConnectParams).Trim()}{(optionalParams.Length > 0 ? $" [{optionalParams.Aggregate("", ConnectParams).Trim()}]" : "")}".TrimStart();
+				CommandUtils.PrintWrongUsageInfo("bind");
+				return CommandExecResult.Failed;
+			}
+			catch (Exception)
+			{
+				ALLog.GlobalLogger.LogError($"Cannot bind to: {args.LastOrDefault()}");
+				throw;
+			}
+		}
+
+
+		[HelpEntry("unbind", "Unbind all endpoints of pusher.")]
+		[CommandEntry("unbind", typeof(Func<string[], CommandExecResult>))]
+		public static CommandExecResult BrServiceUnbind(params string[] args)
+		{
+			if (!BattleReplayPusher.IsListening)
+			{
+				ALLog.GlobalLogger.LogInformation("You must bind a pusher before you unbind it.");
+				return CommandExecResult.Failed;
+			}
+
+			ALLog.GlobalLogger.LogInformation($"Successfully unbind [{BattleReplayPusher.EndPoint}].");
+			BattleReplayPusher.Close();
+			return CommandExecResult.Succeeded;
 		}
 	}
+
+#pragma warning restore IDE0060 // 删除未使用的参数
 }

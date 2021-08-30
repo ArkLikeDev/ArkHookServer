@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 
-namespace ArkLike.HookServer.GUI
+namespace ArkLike.HookServer.Launcher
 {
 	public partial class MainForm : Form
 	{
@@ -177,16 +178,21 @@ namespace ArkLike.HookServer.GUI
 
 		private class LoggerWrapper : ILogger<string>, IDisposable
 		{
-			private readonly TextBox textBox;
+			private readonly RichTextBox textBox;
 
-			private Queue<string> pendingLogs = new();
+			private readonly Queue<(LogLevel logLevel, string text)> pendingLogs = new();
 
-			public LoggerWrapper(TextBox textBox)
+			public LoggerWrapper(RichTextBox textBox)
 			{
 				this.textBox = textBox;
 			}
 			
 			public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+			{	
+				pendingLogs.Enqueue((logLevel, formatter?.Invoke(state, exception)));
+			}
+
+			public void PutLogItem(LogLevel logLevel, string text)
 			{
 				string levelString = logLevel switch
 				{
@@ -199,17 +205,48 @@ namespace ArkLike.HookServer.GUI
 					LogLevel.None => "",
 					_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
 				};
+
+				Color levelColor = logLevel switch
+				{
+					LogLevel.Trace => Color.CornflowerBlue,
+					LogLevel.Debug => Color.DarkSlateGray,
+					LogLevel.Information => Color.LightSkyBlue,
+					LogLevel.Warning => Color.Goldenrod,
+					LogLevel.Error => Color.Brown,
+					LogLevel.Critical => Color.Crimson,
+					LogLevel.None => Color.WhiteSmoke,
+					_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
+				};
+
+				Color origColor = textBox.SelectionColor;
+				int origSelectionStart = textBox.SelectionStart;
+				int origSelectionLen = textBox.SelectionLength;
+
+				textBox.DeselectAll();
+				textBox.AppendText($"\r\n[{DateTime.Now:hh:mm:ss}/");
+
+				textBox.SelectionColor = levelColor;
+				textBox.AppendText(logLevel == LogLevel.None ? "     " : $"{levelString}");
+				textBox.SelectionColor = origColor;
 				
-				pendingLogs.Enqueue(
-					$"[{DateTime.Now:hh:mm:ss}{(logLevel == LogLevel.None ? "      " : $"/{levelString}")}] {formatter.Invoke(state, exception)}");
+				textBox.AppendText("]");
+				textBox.AppendText(text.Trim('\r', '\n', ' '));
+
+				if (origSelectionLen > 0)
+				{
+					textBox.SelectionStart = origSelectionStart;
+					textBox.SelectionLength = origSelectionLen;
+				}
+				else
+					textBox.ScrollToCaret();
 			}
 
 			public void Flush()
 			{
 				while (pendingLogs.Count > 0)
 				{
-					string logItem = pendingLogs.Dequeue().Trim('\r', '\n', ' ');
-					textBox.AppendText(string.Concat("\r\n", logItem));
+					(LogLevel logLevel, string text) = pendingLogs.Dequeue();
+					PutLogItem(logLevel, text);
 				}
 			}
 

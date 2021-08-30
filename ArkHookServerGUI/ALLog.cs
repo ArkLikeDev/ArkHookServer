@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ArkLike.HookServer.GUI
+namespace ArkLike.HookServer.Launcher
 {
 	public static class ALLog
 	{

@@ -1,5 +1,5 @@
 ﻿
-namespace ArkLike.HookServer.GUI
+namespace ArkLike.HookServer.Launcher
 {
 	partial class MainForm
 	{
@@ -33,9 +33,9 @@ namespace ArkLike.HookServer.GUI
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.BattleReplayInputArea = new System.Windows.Forms.GroupBox();
 			this.Base64InputBox = new System.Windows.Forms.TextBox();
-			this.ConsoleOutputBox = new System.Windows.Forms.TextBox();
 			this.CommandInputBox = new System.Windows.Forms.TextBox();
 			this.LogTimer = new System.Windows.Forms.Timer(this.components);
+			this.ConsoleOutputBox = new System.Windows.Forms.RichTextBox();
 			this.BattleReplayInputArea.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -78,25 +78,6 @@ namespace ArkLike.HookServer.GUI
 			this.Base64InputBox.DragOver += new System.Windows.Forms.DragEventHandler(this.Base64InputBox_DragOver);
 			this.Base64InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Base64InputBox_KeyDown);
 			// 
-			// ConsoleOutputBox
-			// 
-			this.ConsoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ConsoleOutputBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.ConsoleOutputBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.ConsoleOutputBox.ForeColor = System.Drawing.SystemColors.HighlightText;
-			this.ConsoleOutputBox.Location = new System.Drawing.Point(11, 12);
-			this.ConsoleOutputBox.MaxLength = 10000000;
-			this.ConsoleOutputBox.Multiline = true;
-			this.ConsoleOutputBox.Name = "ConsoleOutputBox";
-			this.ConsoleOutputBox.ReadOnly = true;
-			this.ConsoleOutputBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.ConsoleOutputBox.Size = new System.Drawing.Size(1120, 611);
-			this.ConsoleOutputBox.TabIndex = 2;
-			this.ConsoleOutputBox.TabStop = false;
-			this.ConsoleOutputBox.Text = resources.GetString("ConsoleOutputBox.Text");
-			// 
 			// CommandInputBox
 			// 
 			this.CommandInputBox.AcceptsReturn = true;
@@ -125,6 +106,25 @@ namespace ArkLike.HookServer.GUI
 			this.LogTimer.Interval = 10;
 			this.LogTimer.Tick += new System.EventHandler(this.LogTimer_Tick);
 			// 
+			// ConsoleOutputBox
+			// 
+			this.ConsoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ConsoleOutputBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.ConsoleOutputBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.ConsoleOutputBox.Cursor = System.Windows.Forms.Cursors.Default;
+			this.ConsoleOutputBox.ForeColor = System.Drawing.SystemColors.Window;
+			this.ConsoleOutputBox.Location = new System.Drawing.Point(12, 12);
+			this.ConsoleOutputBox.MaxLength = 10000000;
+			this.ConsoleOutputBox.Name = "ConsoleOutputBox";
+			this.ConsoleOutputBox.ReadOnly = true;
+			this.ConsoleOutputBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+			this.ConsoleOutputBox.Size = new System.Drawing.Size(1119, 611);
+			this.ConsoleOutputBox.TabIndex = 2;
+			this.ConsoleOutputBox.TabStop = false;
+			this.ConsoleOutputBox.Text = resources.GetString("ConsoleOutputBox.Text");
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -132,8 +132,8 @@ namespace ArkLike.HookServer.GUI
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(42)))), ((int)(((byte)(42)))));
 			this.ClientSize = new System.Drawing.Size(1143, 728);
-			this.Controls.Add(this.CommandInputBox);
 			this.Controls.Add(this.ConsoleOutputBox);
+			this.Controls.Add(this.CommandInputBox);
 			this.Controls.Add(this.BattleReplayInputArea);
 			this.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -150,9 +150,9 @@ namespace ArkLike.HookServer.GUI
 		#endregion
 
 		private System.Windows.Forms.GroupBox BattleReplayInputArea;
-		private System.Windows.Forms.TextBox ConsoleOutputBox;
 		private System.Windows.Forms.TextBox CommandInputBox;
 		private System.Windows.Forms.TextBox Base64InputBox;
 		private System.Windows.Forms.Timer LogTimer;
+		private System.Windows.Forms.RichTextBox ConsoleOutputBox;
 	}
 }

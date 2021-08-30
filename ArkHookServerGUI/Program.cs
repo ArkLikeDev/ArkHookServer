@@ -1,17 +1,14 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 
-namespace ArkLike.HookServer.GUI
+namespace ArkLike.HookServer.Launcher
 {
-	static class Program
+	public static class Program
 	{
-		public static Form MainForm;
-		
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
@@ -22,15 +19,14 @@ namespace ArkLike.HookServer.GUI
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			var mainForm = new MainForm();
-			MainForm = mainForm;
-			
+
 			mainForm.OnConsoleInput += HandleConsoleInput;
 			mainForm.OnCommitBattleReplay += HandleBattleReplayInput;
 			mainForm.OnUserInterrupt += HandleUserInterrupt;
 			ALLog.GlobalLogger = mainForm.Logger;
 			
 			mainForm.AddCommandAutoCompletions(Commands.HelpEntries.Keys.ToArray());
-
+			
 			Application.Run(mainForm);
 		}
 
@@ -62,14 +58,26 @@ namespace ArkLike.HookServer.GUI
 
 		private static void HandleBattleReplayInput(object sender, string replay)
 		{
-			ALLog.GlobalLogger.LogInformation($"Committed battle replay.");
+			if (!BattleReplayPusher.IsListening)
+			{
+				ALLog.GlobalLogger.LogInformation("Pusher has not been set up yet. Use 'bind' command to bind one.");
+				return;
+			}
+
+			try
+			{
+				BattleReplayPusher.SendFrame(replay);
+				ALLog.GlobalLogger.LogInformation("Committed battle replay.");
+			}
+			catch (Exception e)
+			{
+				ALLog.GlobalLogger.LogError($"Error occurred while committing battle replay:\r\n{e}");
+			}
 		}
 
 		private static void HandleUserInterrupt(object sender, EventArgs e)
 		{
 
 		}
-
-		
 	}
 }

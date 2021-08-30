@@ -57,14 +57,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConsoleOutputBox.Text" xml:space="preserve">
-    <value>ArkHookServer GUI v0.1. Powered by ArkHook.
-Arknights © HYPERGRYPH CO., LTD. Decompiled by ArkLike Dev Team.
-This program uses frida-clr to inject custom code into game instance.
-The whole elaboration is done locally and under your complete responsibility.
-You may start to attach or spawn game process now.</value>
-  </data>
   <metadata name="LogTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="ConsoleOutputBox.Text" xml:space="preserve">
+    <value>ArkHookServer Launcher GUI v0.1. Powered by ArkHook.
+Arknights © HYPERGRYPH CO., LTD. Decompiled by ArkLike Dev Team.
+This program uses frida-clr to inject custom code into game instance.
+The whole elaboration is done locally and under your complete responsibility.
+You may start to attach or spawn game process now.
+</value>
+  </data>
 </root>
