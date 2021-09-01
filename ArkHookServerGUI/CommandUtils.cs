@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ namespace ArkLike.HookServer.Launcher
 				ALLog.GlobalLogger.LogInformation(helpData.HelpText);
 		}
 		
-		public static bool TryGetCommand(string command, out Func<string[], Task<Commands.CommandExecResult>> func, 
+		public static bool TryGetCommand(string command, out Func<string[], CancellationToken, Task<Commands.CommandExecResult>> func, 
 			bool logHintWhenInvalid = true)
 		{
 			if (!Commands.CommandEntries.TryGetValue(command, out func))

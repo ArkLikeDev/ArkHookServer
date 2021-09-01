@@ -14,7 +14,6 @@ E:\Repo\ArkHookServer\AHSCore\bin\Release\net5.0\Grpc.Core.Api.dll
 E:\Repo\ArkHookServer\AHSCore\bin\Release\net5.0\Grpc.Net.Client.dll
 E:\Repo\ArkHookServer\AHSCore\bin\Release\net5.0\Grpc.Net.ClientFactory.dll
 E:\Repo\ArkHookServer\AHSCore\bin\Release\net5.0\Grpc.Net.Common.dll
-E:\Repo\ArkHookServer\AHSCore\obj\Release\net5.0\AHSCore.csproj.AssemblyReference.cache
 E:\Repo\ArkHookServer\AHSCore\obj\Release\net5.0\AHSCore.GeneratedMSBuildEditorConfig.editorconfig
 E:\Repo\ArkHookServer\AHSCore\obj\Release\net5.0\AHSCore.AssemblyInfoInputs.cache
 E:\Repo\ArkHookServer\AHSCore\obj\Release\net5.0\AHSCore.AssemblyInfo.cs

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedParameter.Global
 
 namespace ArkLike.HookServer.Launcher
 {
-#pragma warning disable IDE0060 // 删除未使用的参数
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:删除未使用的参数", Justification = "Method used via reflection")]
 	internal static class Commands
 	{
 		public enum CommandExecResult
@@ -20,7 +20,7 @@ namespace ArkLike.HookServer.Launcher
 		}
 
 		public static readonly SortedDictionary<string, CommandHelpData> HelpEntries = new();
-		public static readonly Dictionary<string, Func<string[], Task<CommandExecResult>>> CommandEntries = new();
+		public static readonly Dictionary<string, Func<string[], CancellationToken, Task<CommandExecResult>>> CommandEntries = new();
 
 		static Commands()
 		{
@@ -28,11 +28,12 @@ namespace ArkLike.HookServer.Launcher
 			CommandInitializer.InitializeCommandsInType(typeof(LauncherCommands));
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("help", "List commands, or get help of specified command.", 0,"command")]
 		[CommandEntry("help", typeof(Func<string[], CommandExecResult>))]
 		[InheritedCommandEntry("man", "help")]
 		[InheritedCommandEntry("info", "help")]
-		public static CommandExecResult GetHelp(params string[] args)
+		public static CommandExecResult GetHelp(string[] args)
 		{
 			if (args is not {Length: > 0})
 			{
@@ -48,69 +49,76 @@ namespace ArkLike.HookServer.Launcher
 			return CommandExecResult.Succeeded;
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("attach", "Attach to existing game process.")]
 		[CommandEntry("attach", typeof(Func<string[], CommandExecResult>))]
-		public static CommandExecResult Attach(params string[] args)
+		public static CommandExecResult Attach(string[] args)
 		{
 			throw new NotImplementedException();
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("attach-spawn", "Spawn game instance and attach.")]
 		[InheritedHelpEntry("attach-with-spawn", "attach-spawn")]
 		[InheritedHelpEntry("spawn", "attach-spawn")]
 		[CommandEntry("attach-spawn", typeof(Func<string[], CommandExecResult>))]
 		[InheritedCommandEntry("attach-with-spawn", "attach-spawn")]
 		[InheritedCommandEntry("spawn", "attach-spawn")]
-		public static CommandExecResult AttachWithSpawn(params string[] args)
+		public static CommandExecResult AttachWithSpawn(string[] args)
 		{
 			throw new NotImplementedException();
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("echo", "Write output to console. For test purpose only.", parameters:"text")]
 		[CommandEntry("echo", typeof(Func<string[], CommandExecResult>))]
-		public static CommandExecResult Echo(params string[] args)
+		public static CommandExecResult Echo(string[] args)
 		{
 			ALLog.GlobalLogger.LogInformation(args.Aggregate("", string.Concat));
 			return CommandExecResult.Succeeded;
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("about", "Show version information.")]
 		[InheritedHelpEntry("version", "about")]
 		[CommandEntry("about", typeof(Func<string[], CommandExecResult>))]
 		[InheritedCommandEntry("version", "about")]
-		public static CommandExecResult About(params string[] args)
+		public static CommandExecResult About(string[] args)
 		{
 			ALLog.GlobalLogger.LogInformation(Assembly.GetExecutingAssembly().FullName);
 			return CommandExecResult.Succeeded;
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("exit", "Does what it says.")]
 		[InheritedHelpEntry("quit", "exit")]
-		[CommandEntry("exit", typeof(Func<string[], Task<CommandExecResult>>))]
+		[CommandEntry("exit", typeof(Func<string[], CancellationToken, Task<CommandExecResult>>))]
 		[InheritedCommandEntry("quit", "exit")]
-		public static async Task<CommandExecResult> Exit(params string[] args)
+		public static async Task<CommandExecResult> Exit(string[] args, CancellationToken ct)
 		{
 			ALLog.GlobalLogger.LogInformation("Goodbye");
-			await Task.Delay(800);
+			await Task.Delay(1000, ct);
 			Environment.Exit(0);
 
 			return CommandExecResult.Failed;//理论上不会执行到这一句
 		}
 		
+		[UsedImplicitly]
 		[HelpEntry("list-devices", "List existing devices in frida device manager.")]
 		[InheritedHelpEntry("list", "list-devices")]
 		[CommandEntry("list-devices", typeof(Func<string[], CommandExecResult>))]
 		[InheritedCommandEntry("list", "list-devices")]
-		public static CommandExecResult ListDevices(params string[] args)
+		public static CommandExecResult ListDevices(string[] args)
 		{
 			ALLog.GlobalLogger.LogInformation($"list of frida devices attached:\r\n{FridaUtils.GetFridaDeviceListAsString()}");
 
 			return CommandExecResult.Succeeded;
 		}
 
+		[UsedImplicitly]
 		[HelpEntry("bind", "Close existing one and set up a new battle replay pusher. Binding string example:'tcp://127.0.0.1:5555'", parameters:"binding string | -p port")]
 		[CommandEntry("bind", typeof(Func<string[], CommandExecResult>))]
-		public static CommandExecResult BrServiceBind(params string[] args)
+		public static CommandExecResult BrServiceBind(string[] args)
 		{
 			static void LogSucceededInfo()
 			{
@@ -151,10 +159,10 @@ namespace ArkLike.HookServer.Launcher
 			}
 		}
 
-
+		[UsedImplicitly]
 		[HelpEntry("unbind", "Unbind all endpoints of pusher.")]
 		[CommandEntry("unbind", typeof(Func<string[], CommandExecResult>))]
-		public static CommandExecResult BrServiceUnbind(params string[] args)
+		public static CommandExecResult BrServiceUnbind(string[] args)
 		{
 			if (!BattleReplayPusher.IsListening)
 			{
@@ -167,6 +175,4 @@ namespace ArkLike.HookServer.Launcher
 			return CommandExecResult.Succeeded;
 		}
 	}
-
-#pragma warning restore IDE0060 // 删除未使用的参数
 }

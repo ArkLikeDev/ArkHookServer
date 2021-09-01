@@ -1,0 +1,2 @@
+obj\Release\net5.0\Protos/Producer.cs \
+obj\Release\net5.0\Protos/ProducerGrpc.cs: Protos/producer.proto

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace ArkLike.HookServer.Launcher
 {
 	public static class Program
 	{
+		private static readonly Stack<CtsHolder> interruptionStack = new();
+		
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
@@ -32,28 +35,50 @@ namespace ArkLike.HookServer.Launcher
 
 		private static void HandleConsoleInput(object sender, string commandWithArgs)
 		{
-			static async Task AwaitWithCatch(Func<string[], Task<Commands.CommandExecResult>> func, string[] args, string rawInvokeInfo)
-			{
-				try
-				{
-					Commands.CommandExecResult result = await func(args);
-
-					if(result == Commands.CommandExecResult.Failed)
-						ALLog.GlobalLogger.LogError($"Failed to execute command: {rawInvokeInfo}");
-				}
-				catch (Exception e)
-				{
-					ALLog.GlobalLogger.LogError($"Error occurred while executing command: {rawInvokeInfo}\r\n{e}");
-				}
-			}
-			
 			ALLog.GlobalLogger.Log(LogLevel.None, $">>>{commandWithArgs}");
 			if(!CommandUtils.ParseCommandWithArgs(commandWithArgs, out string command, out string[] args)
 				|| string.IsNullOrWhiteSpace(command)
 				|| !CommandUtils.TryGetCommand(command, out var func))
 				return;
 			
-			Task.Run(() => AwaitWithCatch(func, args, commandWithArgs));
+			Task.Run(() => ExecuteCommand(func, args, commandWithArgs));
+		}
+
+		private static async Task ExecuteCommand(Func<string[], CancellationToken, Task<Commands.CommandExecResult>> func, string[] args, string rawInvokeInfo)
+		{
+			var cts = new CancellationTokenSource();
+			var holder = new CtsHolder(cts);
+			lock (interruptionStack)
+			{
+				interruptionStack.Push(holder);
+			}
+			
+			cts.Token.Register(() =>
+			{
+				ALLog.GlobalLogger.LogError($"User Interruption: {rawInvokeInfo}");
+			});
+			try
+			{
+				Commands.CommandExecResult result = await func(args, cts.Token);
+
+				if (result == Commands.CommandExecResult.Failed) ALLog.GlobalLogger.LogError($"Failed to execute command: {rawInvokeInfo}");
+			}
+			catch (OperationCanceledException e)
+			{
+				ALLog.GlobalLogger.LogError($"The operation was canceled: {rawInvokeInfo}\r\n{e}");
+			}
+			catch (Exception e)
+			{
+				ALLog.GlobalLogger.LogError($"Error occurred while executing command: {rawInvokeInfo}\r\n{e}");
+			}
+			finally
+			{
+				lock (interruptionStack)
+				{
+					cts.Dispose();
+					holder.isDisposed = true;
+				}
+			}
 		}
 
 		private static void HandleBattleReplayInput(object sender, string replay)
@@ -77,7 +102,30 @@ namespace ArkLike.HookServer.Launcher
 
 		private static void HandleUserInterrupt(object sender, EventArgs e)
 		{
+			lock (interruptionStack)
+			{
+				while (interruptionStack.TryPop(out CtsHolder holder))
+				{
+					if (!holder.isDisposed)
+					{
+						holder.cts.Cancel();
+						holder.cts.Dispose();
+						return;
+					}
+				}
+			}
+		}
 
+		private class CtsHolder
+		{
+			public readonly CancellationTokenSource cts;
+			public bool isDisposed;
+
+			public CtsHolder(CancellationTokenSource cts)
+			{
+				this.cts = cts;
+				isDisposed = false;
+			}
 		}
 	}
 }

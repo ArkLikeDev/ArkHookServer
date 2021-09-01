@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "ArkLike.HookServer.Core.Producer";
+
+package producer;
+
+service Producer{
+	rpc SubscribeBattleReplay (stream BattelReplayRequest) returns (stream BattleReplayResponse);
+}
+
+message BattelReplayRequest{
+
+}
+
+message BattleReplayResponse{
+	string replay = 1;
+}

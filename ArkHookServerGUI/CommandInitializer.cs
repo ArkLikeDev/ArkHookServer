@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArkLike.HookServer.Launcher
 {
 	internal static class CommandInitializer
 	{
+		private static readonly HashSet<Type> initializedTypes = new();
+		
 		public static void InitializeCommandsInType(Type type)
 		{
+			if(initializedTypes.Contains(type))
+				return;
+
+			initializedTypes.Add(type);
+			
 			List<InheritedCommandEntryAttribute> pendingCommandEntries= new();
 			List<InheritedHelpEntryAttribute> pendingHelpEntries = new();
 			
@@ -19,19 +27,7 @@ namespace ArkLike.HookServer.Launcher
 					switch (attribute)
 					{
 						case CommandEntryAttribute commandEntry:
-							switch (114514)
-							{
-								case 114514 when commandEntry.FuncType.IsAssignableTo(typeof(Func<string[], Commands.CommandExecResult>)):
-									Commands.CommandEntries.Add(commandEntry.Entry, async args =>
-									{
-										return await Task.Run(() => method.CreateDelegate<Func<string[], Commands.CommandExecResult>>()(args));
-									});
-									break;
-
-								case 114514 when commandEntry.FuncType.IsAssignableTo(typeof(Func<string[], Task<Commands.CommandExecResult>>)):
-									Commands.CommandEntries.Add(commandEntry.Entry, method.CreateDelegate<Func<string[], Task<Commands.CommandExecResult>>>());
-									break;
-							}
+							Commands.CommandEntries.Add(commandEntry.Entry, ToStandardFunction(method, commandEntry.FuncType));
 							break;
 
 						case HelpEntryAttribute helpEntry:
@@ -60,6 +56,41 @@ namespace ArkLike.HookServer.Launcher
 				pendingCommandEntries.Clear();
 				pendingHelpEntries.Clear();
 			}
+		}
+
+		private static Func<string[], CancellationToken, Task<Commands.CommandExecResult>> ToStandardFunction(MethodInfo method, Type funcType)
+		{
+			return 114514 switch
+			{
+				114514 when funcType.IsAssignableTo(typeof(Action<string[]>)) =>
+					async (args, ct) =>
+					{
+						await Task.Run(
+							() => method.CreateDelegate<Action<string[]>>()(args), ct);
+						return Commands.CommandExecResult.Succeeded;
+					},
+				
+				114514 when funcType.IsAssignableTo(typeof(Func<string[], Commands.CommandExecResult>)) =>
+					async (args, ct) =>
+					{
+						return await Task.Run(
+							() => method.CreateDelegate<Func<string[], Commands.CommandExecResult>>()(args), ct);
+					},
+
+				114514 when funcType.IsAssignableTo(typeof(Func<string[], Task<Commands.CommandExecResult>>)) =>
+					async (args, ct) =>
+					{
+						return await Task.Run(
+							() => method.CreateDelegate<Func<string[], Task<Commands.CommandExecResult>>>()(args), ct);
+					},
+
+				114514 when funcType.IsAssignableTo(
+					typeof(Func<string[], CancellationToken, Task<Commands.CommandExecResult>>)) => 
+					method.CreateDelegate<Func<string[], CancellationToken, Task<Commands.CommandExecResult>>>(),
+
+				_ => throw new ArgumentOutOfRangeException(nameof(funcType),
+					$@"Unable to covert {funcType} to {typeof(Func<string[], CancellationToken, Task<Commands.CommandExecResult>>)}!")
+			};
 		}
 	}
 }

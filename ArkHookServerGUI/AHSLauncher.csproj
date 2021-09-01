@@ -13,12 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="2.39.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AHSCore\AHSCore.csproj" />
     <ProjectReference Include="..\FridaSharp\FridaSharp\AHSFridaBinding.csproj" />
   </ItemGroup>
 

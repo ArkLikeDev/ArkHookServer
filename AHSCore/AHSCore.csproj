@@ -13,7 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\producer.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\producer.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
